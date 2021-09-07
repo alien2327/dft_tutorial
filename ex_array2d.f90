@@ -1,3 +1,9 @@
+!   Used values
+!   20.0 19.8 20.1 20.0 20.0 19.9
+!   40.3 40.1 40.0 39.5 39.9 40.0
+!   42.0 41.5 41.3 41.1 39.8 41.0
+!   20.4 26.9 38.4 42.0 12.2 6.0
+
 program generate
 !   Purpose:
 !       To calculate total instantaneous power supplied by a generating
