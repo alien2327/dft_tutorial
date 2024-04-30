@@ -1,0 +1,54 @@
+# https://next-gen.materialsproject.org/materials/mp-22862?chemsys=Na-Cl
+units real
+dimension 3
+boundary p p p
+atom_style charge
+
+variable lat_const equal 5.59
+variable num_atoms equal 2
+variable mass_Na equal 22.99
+variable charge_Na equal 1.0
+variable mass_Cl equal 35.45
+variable charge_Cl equal -1.0
+
+variable init_temp equal 300
+variable final_temp equal 1000
+variable temp_damp equal 100
+variable time_step equal 0.1 # fs
+variable num_steps equal 10000
+variable dump_interval equal 100
+
+lattice fcc ${lat_const}
+region box block 0 10 0 10 0 10
+# create_box 원소개수 영역이름
+create_box ${num_atoms} box
+
+# Na 설정
+lattice fcc ${lat_const} origin 0.0 0.0 0.0
+region Na block 0 10 0 10 0 10
+create_atoms 1 region Na
+mass 1 ${mass_Na}
+set type 1 charge ${charge_Na}
+
+# Cl 설정
+lattice fcc ${lat_const} origin 0.0 0.0 0.5
+region Cl block 0 10 0 10 0 10
+create_atoms 2 region Cl
+mass 2 ${mass_Cl}
+set type 2 charge ${charge_Cl}
+
+pair_style buck/coul/long 10.0
+kspace_style pppm 1.0e-5
+pair_coeff 1 1 3796.9 0.2603 124.90
+pair_coeff 2 2 1227.2 0.3214 124.90
+pair_coeff 1 2 4117.9 0.3048   0.00
+
+velocity all create ${init_temp} 4928459 dist gaussian
+fix 1 all nvt temp ${final_temp} ${final_temp} ${temp_damp}
+
+reset_timestep 0
+timestep ${time_step}
+thermo ${dump_interval}
+thermo_style custom step temp pe ke etotal press vol
+dump 1 all custom ${dump_interval} 0_nacl_fcc.lammpstrj id type x y z vx vy vz
+run ${num_steps}

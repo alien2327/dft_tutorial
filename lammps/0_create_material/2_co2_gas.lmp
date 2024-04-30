@@ -1,0 +1,4 @@
+units real
+dimension 3
+boundary s s s
+atom_style molecular
